@@ -109,17 +109,17 @@ class Users {
   /**
    * Update a item in the DB and return the updated item
    * @param {number} id - id of the item to be updated
-   * @param {object} body - it contains all the data to be updated
+   * @param {object} highScore - it contains all the data to be updated
    * @returns {object} the updated item or undefined if the update operation failed
    */
-  updateOne(username, body) {
+  updateOne(username, highScore) {
     const items = parse(this.jsonDbPath, this.defaultItems);
     const foundIndex = items.findIndex((item) => item.username == username);
     if (foundIndex < 0) return;
     // create a new object based on the existing item - prior to modification -
     // and the properties requested to be updated (those in the body of the request)
     // use of the spread operator to create a shallow copy and repl
-    const updateditem = { ...items[foundIndex], ...body };
+    const updateditem = { ...items[foundIndex], ...highScore };
     // replace the item found at index : (or use splice)
     items[foundIndex] = updateditem;
 
@@ -189,6 +189,7 @@ class Users {
   }
 
   getHighscore(username) { 
+    //console.log(getOneByUsername(username))
     let highScore = getOneByUsername(username).highScore;
     return highScore;
   }
@@ -198,7 +199,7 @@ class Users {
    * @param {number} id - id of the item to be updated
    * @param {object} body - it contains all the data to be updated
    * @returns {object} the updated item or undefined if the update operation failed
-   
+   */
    updateHighScore(username, body) {
     const items = parse(this.jsonDbPath, this.defaultItems);
     const foundIndex = items.findIndex((item) => item.username == username);
@@ -213,7 +214,7 @@ class Users {
     serialize(this.jsonDbPath, items);
     return updateditem;
   }
-*/
+
 
 }
 

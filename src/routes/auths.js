@@ -75,12 +75,15 @@ router.post("/score/:username", authorize , function (req , res, next) {
   });
 */
 
-router.put("/score/:username", function (req, res) {
-  console.log(`PUT /auths/score/${req.params.username}`);
+router.post("/score", function (req, res) {
+  console.log(`POST /auths/score/${req.body.username}`);
   
-  const user = userModel.updateOne(req.params.username, req.body);
+  //let highScore = userModel.getHighscore(req.body.username);
+  //const user = userModel.updateOne(req.body.username, req.body.highScore);
+  const user = userModel.updateHighScore(req.body.username, req.body)
   // Send an error code 'Not Found' if the user was not found :
   if (!user) return res.status(404).end();
+  //let highScore = userModel.getHighscore();
   return res.json(user);
 });
 
