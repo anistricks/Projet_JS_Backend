@@ -15,7 +15,7 @@ const defaultItems = [
  {
   username: "admin",
  password: "$2b$10$RqcgWQT/Irt9MQC8UfHmjuGCrQkQNeNcU6UtZURdSB/fyt6bMWARa",//"admin",
-  },
+  highScore: 0},
 ];
 
 class Users {
@@ -84,6 +84,7 @@ class Users {
     const newitem = {
       username: body.username,
       password: hashedPassword,
+      highScore: 0
     };
     items.push(newitem);
     serialize(this.jsonDbPath, items);
@@ -111,9 +112,9 @@ class Users {
    * @param {object} body - it contains all the data to be updated
    * @returns {object} the updated item or undefined if the update operation failed
    */
-  updateOne(id, body) {
+  updateOne(username, body) {
     const items = parse(this.jsonDbPath, this.defaultItems);
-    const foundIndex = items.findIndex((item) => item.id == id);
+    const foundIndex = items.findIndex((item) => item.username == username);
     if (foundIndex < 0) return;
     // create a new object based on the existing item - prior to modification -
     // and the properties requested to be updated (those in the body of the request)
@@ -186,6 +187,34 @@ class Users {
     authenticatedUser.token = token;
     return authenticatedUser;
   }
+
+  getHighscore(username) { 
+    let highScore = getOneByUsername(username).highScore;
+    return highScore;
+  }
+
+  /* 
+   * Update a item in the DB and return the updated item
+   * @param {number} id - id of the item to be updated
+   * @param {object} body - it contains all the data to be updated
+   * @returns {object} the updated item or undefined if the update operation failed
+   
+   updateHighScore(username, body) {
+    const items = parse(this.jsonDbPath, this.defaultItems);
+    const foundIndex = items.findIndex((item) => item.username == username);
+    if (foundIndex < 0) return;
+    // create a new object based on the existing item - prior to modification -
+    // and the properties requested to be updated (those in the body of the request)
+    // use of the spread operator to create a shallow copy and repl
+    const updateditem = { ...items[foundIndex], ...body };
+    // replace the item found at index : (or use splice)
+    items[foundIndex] = updateditem;
+
+    serialize(this.jsonDbPath, items);
+    return updateditem;
+  }
+*/
+
 }
 
 module.exports = { Users };

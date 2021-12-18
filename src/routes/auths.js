@@ -1,6 +1,6 @@
 var express = require("express");
 var router = express.Router();
-const { Users } = require("../model/users");
+const { Users } = require("../model/users.js");
 const userModel = new Users();
 
 /* Register a user : POST /auths/register */
@@ -56,5 +56,35 @@ router.get("/logout", async function (req, res, next) {
   req.session = null;
   return res.status(200).end();
 });
+
+
+/*
+router.post("/score/:username", authorize , function (req , res, next) {
+
+  // Send an error code '400 Bad request' if the body parameters are not valid
+  if (
+    !req.body ||
+    (req.body.hasOwnProperty("highScore") && req.body.highScore.length === 0) ||
+    (req.body.hasOwnProperty("username") && req.body.username.length === 0)
+  )
+    return res.status(400).end();
+
+  const highScore = userModel.getHighscore(req.body.username);
+  if(req.body)
+  const score = userModel.updateHighScore(req.body.username, {highScore: req.body.highScore} )
+  });
+*/
+
+router.put("/score/:username", function (req, res) {
+  console.log(`PUT /auths/score/${req.params.username}`);
+  
+  const user = userModel.updateOne(req.params.username, req.body);
+  // Send an error code 'Not Found' if the user was not found :
+  if (!user) return res.status(404).end();
+  return res.json(user);
+});
+
+  
+
 
 module.exports = router;
