@@ -67,6 +67,7 @@ class Users {
 
     return items[foundIndex];
   }
+  
 
   /**
    * Add a item in the DB and returns - as Promise - the added item (containing a new id)
@@ -137,6 +138,7 @@ class Users {
 
   async login(username, password) {
     const userFound = this.getOneByUsername(username);
+    
     if (!userFound) return;
     // checked hash of passwords
     const match = await bcrypt.compare(password, userFound.password);
@@ -145,6 +147,7 @@ class Users {
     const authenticatedUser = {
       username: username,
       token: "Future signed token",
+      
     };
 
     // replace expected token with JWT : create a JWT
@@ -156,6 +159,7 @@ class Users {
 
     authenticatedUser.token = token;
     return authenticatedUser;
+
   }
 
   /**
@@ -188,11 +192,7 @@ class Users {
     return authenticatedUser;
   }
 
-  getHighscore(username) { 
-    //console.log(getOneByUsername(username))
-    let highScore = getOneByUsername(username).highScore;
-    return highScore;
-  }
+  
 
   /* 
    * Update a item in the DB and return the updated item
@@ -214,6 +214,36 @@ class Users {
     serialize(this.jsonDbPath, items);
     return updateditem;
   }
+/*
+  getHighscore(username) { 
+    //console.log(getOneByUsername(username))
+    let highScore = getOneByUsername(username).highScore;
+    return highScore;
+  }*/
+
+
+  /* 
+   * Update a item in the DB and return the updated item
+   * @param {number} id - id of the item to be updated
+   * @param {object} body - it contains all the data to be updated
+   * @returns {object} the updated item or undefined if the update operation failed
+   */
+  getHighScore(username) {
+    const items = parse(this.jsonDbPath, this.defaultItems);
+    const foundIndex = items.findIndex((item) => item.username == username);
+    if (foundIndex < 0) return;
+    // create a new object based on the existing item - prior to modification -
+    // and the properties requested to be updated (those in the body of the request)
+    // use of the spread operator to create a shallow copy and repl
+    //const updateditem = { ...items[foundIndex], ...body };
+    // replace the item found at index : (or use splice)
+    //items[foundIndex] = updateditem;
+    let  highScoreUsername = items[foundIndex];
+
+    //serialize(this.jsonDbPath, items);
+    return highScoreUsername;
+  }
+
 
 
 }

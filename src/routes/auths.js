@@ -3,6 +3,7 @@ var router = express.Router();
 const { Users } = require("../model/users.js");
 const userModel = new Users();
 
+
 /* Register a user : POST /auths/register */
 router.post("/register", async function (req, res, next) {
   // Send an error code '400 Bad request' if the body parameters are not valid
@@ -48,7 +49,7 @@ router.post("/login", async function (req, res, next) {
   req.session.username = authenticatedUser.username;
   req.session.token = authenticatedUser.token;
 
-  return res.json({ username: authenticatedUser.username });
+  return res.json({ username: authenticatedUser.username , highScore: authenticatedUser.highScore});
 });
 
 /* Logout a user : POST /auths/logout */
@@ -80,11 +81,52 @@ router.post("/score", function (req, res) {
   
   //let highScore = userModel.getHighscore(req.body.username);
   //const user = userModel.updateOne(req.body.username, req.body.highScore);
-  const user = userModel.updateHighScore(req.body.username, req.body)
+  
+  //let highScoreUsername = userModel.getHighScore(req.body.username);
+ 
+  const user = userModel.updateHighScore(req.body.username, req.body);
+ 
   // Send an error code 'Not Found' if the user was not found :
   if (!user) return res.status(404).end();
   //let highScore = userModel.getHighscore();
   return res.json(user);
+});
+
+
+router.post("/user", function (req, res) {
+  console.log(`POST /auths/user/${req.body.username}`);
+  
+  //let highScore = userModel.getHighscore(req.body.username);
+  //const user = userModel.updateOne(req.body.username, req.body.highScore);
+  console.log(req.body.username);
+  //const userHighScore = userModel.getHighScore(req.body.username);
+  const userHighScore= userModel.getOneByUsername(req.body.username)
+  // Send an error code 'Not Found' if the user was not found :
+  if (!userHighScore) return res.status(404).end();
+  //let highScore = userModel.getHighscore();
+  console.log('Return User : ' + userHighScore)
+  return res.json(userHighScore);
+});
+
+
+router.get("/leaderboard", function (res) {
+  //let highScore = userModel.getHighscore(req.body.username);
+  //const user = userModel.updateOne(req.body.username, req.body.highScore);
+  //console.log(req.body.username);
+  //const userHighScore = userModel.getHighScore(req.body.username);
+  let users = userModel.getAll();
+  const leaderboard= leaderboardModel.getLeaderboard(users);
+  // Send an error code 'Not Found' if the user was not found :
+  if (!leaderboard) return res.status(404).end();
+  //let highScore = userModel.getHighscore();
+  
+  return res.json(leaderboard);
+});
+
+router.get("/users",function (req, res) {
+  
+  
+  return res.json(userModel.getAll());
 });
 
   
